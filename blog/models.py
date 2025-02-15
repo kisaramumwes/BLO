@@ -55,3 +55,23 @@ class Post(models.Model):
         verbose_name = 'пост'
         verbose_name_plural = 'публикации'
         unique_together = ('category', 'slug')
+    class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [['user', 'post']]
+
+    def __str__(self):  # Исправлено на __str__
+        return f"{self.user} likes {self.post}"
+
+
+class Donation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):  # Исправлено на __str__
+        return f"Donation by {self.user.username}: ${self.amount}"
